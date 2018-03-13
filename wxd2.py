@@ -1,6 +1,12 @@
-import json
+import os
 import time
-from wxpy import *
+import json
+from wxpy import Bot, embed
+
+
+LOG_FOLDER = './difflog/'
+if not os.path.exists(LOG_FOLDER):
+    os.makedirs(LOG_FOLDER)
 
 
 def getdiff():
@@ -34,7 +40,7 @@ def getdiff():
     if difflist_lost != [] or difflist_new != []:
         print('-:', difflist_lost)
         print('+:', difflist_new)
-        filename = 'difflog_' + time.strftime("%Y%m%d", time.localtime()) + '.json'
+        filename = LOG_FOLDER + time.strftime("%Y%m%d", time.localtime()) + '.json'
         fp = open(filename, 'w')
         json.dump((difflist_lost, difflist_new), fp)
         fp.close()
