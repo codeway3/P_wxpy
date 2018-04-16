@@ -1,3 +1,4 @@
+# -*- coding：utf-8 -*-
 import os
 import time
 import json
@@ -18,31 +19,31 @@ def getdiff():
 
     # get old & save new
     try:
-        old_list = json.load(open('record.json', 'r'))
+        old_dict = json.load(open('record.json', 'r'))
     except:
-        old_list = {}
+        old_dict = {}
     fp = open('record.json', 'w')
-    new_list = {}
+    new_dict = {}
     for member in group:
-        new_list[member.puid] = member.name
-    json.dump(new_list, fp, ensure_ascii=False)
+        new_dict[member.puid] = member.name
+    json.dump(new_dict, fp, ensure_ascii=False)
     fp.close()
 
     # diff & save result
     difflist_lost = []
     difflist_new = []
-    for i in old_list:
-        if i not in new_list:
-            difflist_lost.append((i, old_list[i]))
-    for i in new_list:
-        if i not in old_list:
-            difflist_new.append((i, new_list[i]))
+    for i in old_dict:
+        if i not in new_dict and not old_dict[i] in new_dict.values():
+            difflist_lost.append((i, old_dict[i]))
+    for i in new_dict:
+        if i not in old_dict and not new_dict[i] in old_dict.values():
+            difflist_new.append((i, new_dict[i]))
     if difflist_lost != [] or difflist_new != []:
         print('-:', difflist_lost)
         print('+:', difflist_new)
         filename = LOG_FOLDER + time.strftime("%Y%m%d", time.localtime()) + '.json'
         fp = open(filename, 'w')
-        json.dump((difflist_lost, difflist_new), fp)
+        json.dump((difflist_lost, difflist_new), fp, ensure_ascii=False)
         fp.close()
     else:
         print('No Change!')
